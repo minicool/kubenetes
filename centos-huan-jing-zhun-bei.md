@@ -39,6 +39,8 @@ setenforce 0
 ## yum源 设置
 
 ```bash
+yum -y install epel-release
+yum update
 #使用阿里云的源予以替换
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo 
 yum makecache
@@ -58,6 +60,44 @@ systemctl stop firewalld & systemctl disable firewalld
 sed -i '/ swap / s/^/#/' /etc/fstab
 swapoff -a
 #通过top查看swap是否为0
+```
+
+## yum-k8s 环境
+
+{% code-tabs %}
+{% code-tabs-item title="/etc/yum.repos.d/kubernetes.repo" %}
+```text
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+## 网络内核设置
+
+{% code-tabs %}
+{% code-tabs-item title="/etc/sysctl.conf" %}
+```text
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+#如果net.bridge.bridge-nf-call-iptables＝1，也就意味着二层的网桥在转发包时也会被iptables的FORWARD规则所过滤，这样就会出现L3层的iptables rules去过滤L2的帧的问题
+sysctl -p
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+## 时间校对
+
+```bash
+yum install -y ntp
+systemctl start ntpd;systemctl enable ntpd
+ntpdate ntp1.aliyun.com
+hwclock -w
 ```
 
 
