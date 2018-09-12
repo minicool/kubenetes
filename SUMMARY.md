@@ -8,4 +8,6 @@
 * [脚本安装](jiao-ben-an-zhuang.md)
 * [docker-image 源](dockerimage-yuan.md)
 * [安装k8s-master](an-zhuang-k8smaster.md)
+* [配置 k8s-node](pei-zhi-k8snode.md)
+* [配置k8s-etcd](pei-zhi-k8setcd.md)
 
