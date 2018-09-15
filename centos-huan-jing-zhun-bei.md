@@ -8,7 +8,10 @@
 
 设置hostname
 
-`vi /etc/hostname`
+```bash
+hostnamectl set-hostname k8s-master1-1
+vi /etc/hostname
+```
 
 设置hosts 指向hostname
 
@@ -94,6 +97,11 @@ sysctl -p
 ## 时间校对
 
 ```bash
+#统一时区和时间信息
+timedatectl set-local-rtc 1 
+timedatectl set-timezone Asia/Shanghai 
+timedatectl status
+#时间进行校对
 yum install -y ntp
 systemctl start ntpd;systemctl enable ntpd
 ntpdate ntp1.aliyun.com

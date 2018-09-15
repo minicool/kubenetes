@@ -2,7 +2,7 @@
 description: 笔者在mac进行虚拟环境的搭建
 ---
 
-# 虚拟环境
+# 环境规划
 
 建议下载Parallers Deskop for mac 虚拟机进行环境准备
 
