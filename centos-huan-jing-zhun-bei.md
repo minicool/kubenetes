@@ -53,6 +53,7 @@ yum makecache
 
 ```bash
 #K8S集群安装前进行防火墙关闭
+#安全的做法是在防火墙上配置各组件需要相互通信的端口号，这里选择直接禁用防火墙。
 systemctl stop firewalld & systemctl disable firewalld
 ```
 

@@ -39,8 +39,18 @@ echo "update /etc/kubernetes/kubelet"
 #设置为从本地访问为全网访问
 sed -i 's/--address=127.0.0.1/--address=0.0.0.0/g' /etc/kubernetes/kubelet
 #设置hostname
-sed -i 's/--hostname-override=127.0.0.1/--hostname-override=k8s-node-1/g' /etc/kubernetes/kubelet
+sed -i 's/--hostname-override=127.0.0.1/--hostname-override='$ETCD_HOST_NAME'/g' /etc/kubernetes/kubelet
+#设置api-server
+sed -i 's/-api-servers=http:\/\/127.0.0.1:8080/-api-servers=http:\/\/'$ETCD_1_IP':8080/g' /etc/kubernetes/kubelet
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
+
+#### 启动配置
+
+```bash
+systemctl daemon-reload 
+systemctl restart docker kubelet kube-proxy
+systemctl enable docker kubelet kube-proxy
+```
 
