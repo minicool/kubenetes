@@ -15,4 +15,5 @@
 * [配置k8s-etcd](k8s-huan-jing-pei-zhi/pei-zhi-k8setcd.md)
 * [安装k8s-master](k8s-huan-jing-pei-zhi/an-zhuang-k8smaster.md)
 * [配置 k8s-node](k8s-huan-jing-pei-zhi/pei-zhi-k8snode.md)
+* [test](k8s-huan-jing-pei-zhi/test.md)
 
