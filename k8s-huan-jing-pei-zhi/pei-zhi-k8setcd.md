@@ -62,38 +62,20 @@ ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 #–advertise-client-urls 告知客户端的URL, 也就是服务的URL，tcp2379端口用于监听客户端请求
 ETCD_ADVERTISE_CLIENT_URLS="http://192.168.1.50:2379"
 
-#example 
-k8s-etcd1 192.168.0.201
-k8s-etcd2 192.168.0.211
-k8s-etcd3 192.168.0.212
-
-export ETCD_1_IP=192.168.0.201
-export ETCD_1_NAME=k8s-etcd1
-export ETCD_2_IP=192.168.0.211
-export ETCD_2_NAME=k8s-etcd2
-export ETCD_2_IP=192.168.0.212
-export ETCD_2_NAME=k8s-etcd3
-export ETCD_HOST_IP=$ETCD_1_IP
-export ETCD_HOST_NAME=$ETCD_1_NAME
-
-export ETCD_LISTEN_PEER_URLS=http://$ETCD_HOST_IP:2380
-export ETCD_LISTEN_CLIENT_URLS=http://localhost:2379,http://$ETCD_1_IP:2379
-export ETCD_ADVERTISE_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
-export ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_1_IP:2380
-export ETCD_INITIAL_CLUSTER=$ETCD_1_NAME=http://$ETCD_1_IP:2380,$ETCD_2_NAME=http://$ETCD_2_IP:2380
-export ETCD_INITIAL_CLUSTER_STATE=new
-export ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
-#部分环境变量带有/，导致sed出错，换成！作为表示
-sed -i 's/default.etcd/'$ETCD_HOST_NAME'.etcd/' /etc/etcd/etcd.conf
-sed -i 's/^ETCD_NAME=\"default\"/ETCD_NAME="'$ETCD_HOST_NAME'"/' /etc/etcd/etcd.conf
-sed -i 's!^#ETCD_LISTEN_PEER_URLS="http:\/\/localhost:2380"!ETCD_LISTEN_PEER_URLS="'$ETCD_LISTEN_PEER_URLS'"!' /etc/etcd/etcd.conf
-sed -i 's!^ETCD_LISTEN_CLIENT_URLS="http:\/\/localhost:2379"!ETCD_LISTEN_CLIENT_URLS="'$ETCD_LISTEN_CLIENT_URLS'"!' /etc/etcd/etcd.conf
-sed -i 's!^ETCD_ADVERTISE_CLIENT_URLS="http:\/\/localhost:2379"!ETCD_ADVERTISE_CLIENT_URLS="'$ETCD_ADVERTISE_CLIENT_URLS'"!' /etc/etcd/etcd.conf
-
-sed -i 's!^#ETCD_INITIAL_ADVERTISE_PEER_URLS="http:\/\/localhost:2380"!ETCD_INITIAL_ADVERTISE_PEER_URLS="'$ETCD_INITIAL_ADVERTISE_PEER_URLS'"!' /etc/etcd/etcd.conf
-sed -i 's!^#ETCD_INITIAL_CLUSTER="default=http:\/\/localhost:2380"!ETCD_INITIAL_CLUSTER="'$ETCD_INITIAL_CLUSTER'"!' /etc/etcd/etcd.conf
-sed -i 's!^#ETCD_INITIAL_CLUSTER_STATE="new"!ETCD_INITIAL_CLUSTER_STATE="'$ETCD_INITIAL_CLUSTER_STATE'"!' /etc/etcd/etcd.conf
-sed -i 's!^#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"!ETCD_INITIAL_CLUSTER_TOKEN="'$ETCD_INITIAL_CLUSTER_TOKEN'"!' /etc/etcd/etcd.conf
+# 编辑启动配置项
+vi /usr/lib/systemd/system/etcd.service
+##############################################
+ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd \
+    --name ${ETCD_NAME} \
+    --data-dir ${ETCD_DATA_DIR} \
+    --listen-client-urls ${ETCD_LISTEN_CLIENT_URLS} \
+    --listen-peer-urls ${ETCD_LISTEN_PEER_URLS} \
+    --advertise-client-urls ${ETCD_ADVERTISE_CLIENT_URLS} \
+    --initial-advertise-peer-urls ${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
+    --initial-cluster-token ${ETCD_INITIAL_CLUSTER_TOKEN} \
+    --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE} \
+    --initial-cluster ${ETCD_INITIAL_CLUSTER} "  
+##############################################
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
