@@ -6,37 +6,9 @@
 yum install -y etcd kubernetes-master 
 ```
 
-## 配置etcd 
-
-{% code-tabs %}
-{% code-tabs-item title="/etc/etcd/etcd.conf" %}
-```bash
-#配置etcd服务
-echo "update /etc/etcd/etcd.conf"
-sed -i 's/localhost:2379/&\,http:\/\/192.168.0.201:2379/' /etc/etcd/etcd.conf
-systemctl start etcd;systemctl enable etcd
-# grep -v '^#' /etc/etcd/etcd.conf
-# ETCD_NAME=default
-# ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
-# ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://192.168.0.201:2379"
-# ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.201:2379"
-#刷新配置文件
-systemctl daemon-reload
-#测试etcd服务
-etcdctl cluster-health
-#正常
-# member 8e9e05c52164694d is healthy: got healthy result from http://192.168.0.201:2379
-# cluster is healthy
-#查询etcd列表
-etcdctl member list
-#8e9e05c52164694d: name=default peerURLs=http://localhost:2380 clientURLs=http://192.168.0.201:2379,http://localhost:2379 isLeader=true
-```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
-
 ## 配置master
 
-#### 配置kube-conf
+### 配置kube-conf
 
 {% code-tabs %}
 {% code-tabs-item title="/etc/kubernetes/config" %}
@@ -55,7 +27,7 @@ grep -v '^#' /etc/kubernetes/config
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-#### 配置kube-apiserver
+### 配置kube-apiserver
 
 {% code-tabs %}
 {% code-tabs-item title="/etc/kubernetes/apiserver" %}
@@ -75,7 +47,7 @@ grep -v '^#' /etc/kubernetes/apiserver
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-#### 配置kube-controller-manager
+### 配置kube-controller-manager
 
 {% code-tabs %}
 {% code-tabs-item title="kube-controller-manager" %}
@@ -86,7 +58,7 @@ grep -v '^#' /etc/kubernetes/controller-manager
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-#### 配置kube-scheduler
+### 配置kube-scheduler
 
 {% code-tabs %}
 {% code-tabs-item title=" /etc/kubernetes/scheduler" %}
@@ -101,7 +73,7 @@ grep -v '^#' /etc/kubernetes/scheduler
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-#### 启动服务
+### 启动服务
 
 ```bash
 for i in  kube-apiserver kube-controller-manager kube-scheduler;do systemctl restart $i; systemctl enable $i;done
