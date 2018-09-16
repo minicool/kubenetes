@@ -71,7 +71,7 @@ kubectl config set-context default
 # 设置默认上下文
 kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
 
---embed-certs 为true时, 表示将certificate-authority证书写入到生成的bootstrap.kubeconfig文件中；
+# --embed-certs 为true时, 表示将certificate-authority证书写入到生成的bootstrap.kubeconfig文件中；
 ```
 
 ## **创建kube-proxy.kubeconfig文件**
@@ -106,9 +106,10 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 
 ```bash
 # 将token.csv复制到其他master相对应的/etc/kubernetes中, 供kube-apiserver使用;
-scp 
+scp /etc/kubernetes/token.csv root@192.168.0.202:/etc/kubernetes/
 # 将bootstrap.kubeconfig和kube-proxy.kubeconfig复制到其他node节点的/etc/kubernetes中, 供kubele和kube-proxy使用
-scp
-将~/.kube/config复制到任意想使用kubectl命令行工具的服务器中
+scp /etc/kubernetes/*.kubeconfig root@192.168.0.211:/etc/kubernetes/
+# 将~/.kube/config复制到任意想使用kubectl命令行工具的服务器中
+scp ~/.kube/config root@192.168.0.211:~/.kube/
 ```
 

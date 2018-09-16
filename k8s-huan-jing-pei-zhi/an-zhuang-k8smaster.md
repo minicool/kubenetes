@@ -1,4 +1,4 @@
-# 安装k8s-master
+# 配置k8s-master
 
 ## yum 准备
 

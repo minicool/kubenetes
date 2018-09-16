@@ -1,4 +1,4 @@
-# centos环境
+# 配置centos环境
 
 ## network 设置
 
