@@ -60,13 +60,17 @@ v3版本支持rpc的远程调用，
 ### etcd集群操作
 
 ```text
-#查看节点
+# 查看节点
 etcdctl member list
-#更新一个节点ip
+# 更新一个节点ip
 etcdctl member update memberID http://ip:2380 
-#删除一个节点
+# 删除一个节点
 etcdctl  member  remove  memberID
-#增加一个新节点
+# 增加一个新节点
+etcdctl member add k8s-etcd4 http://192.168.8.213:2380
+# ETCD_NAME="k8s-etcd4"
+# ETCD_INITIAL_CLUSTER="k8s-etcd1=http://192.168.0.201:2380,k8s-etcd4=http://192.168.8.213:2380,k8s-etcd3=http://192.168.0.212:2380,k8s-etcd2=http://192.168.0.211:2380"
+# ETCD_INITIAL_CLUSTER_STATE="existing"
 ```
 
 ```bash

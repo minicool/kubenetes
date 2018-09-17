@@ -184,9 +184,27 @@ sed -i 's!^#ETCD_INITIAL_CLUSTER_STATE="new"!ETCD_INITIAL_CLUSTER_STATE="'$ETCD_
 sed -i 's!^#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"!ETCD_INITIAL_CLUSTER_TOKEN="'$ETCD_INITIAL_CLUSTER_TOKEN'"!' /etc/etcd/etcd.conf
 ```
 
-## \(etcd discovery\)服务发现配置
+## \(etcd discovery\)服务发现配置-适用于DHCP环境 
 
-## \(dns discovery\)DNS发现配置
+### 获取etcd-token
+
+```bash
+# size=3 是建立3个etcd的集群,当3个节点都启动成功后,集群算启动成功
+# 获得的token 只能使用一次(只能用于一个集群的创建)
+curl https://discovery.etcd.io/new?size=3
+https://discovery.etcd.io/1897a698e6f703dd38e9446fa4cc878e
+
+# 私有etcd-token
+# 随机生成token值
+export BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
+curl -X PUT http://192.168.0.201:2379/v2/keys/discovery/{$BOOTSTRAP_TOKEN}/_config/size -d value=3
+{"action":"set","node":{"key":"/discovery/a1c14f1b859dedd32170e44bfaed33d4/_config/size","value":"3","modifiedIndex":12748,"createdIndex":12748}}
+
+#配置DISCOVERY
+#ETCD_DISCOVERY="http://192.168.0.201:2379/v2/keys/discovery/a1c14f1b859dedd32170e44bfaed33d4"
+```
+
+## \(dns discovery\)DNS发现配置-依赖DNS SRV记录
 
 ## etcd服务检验
 
