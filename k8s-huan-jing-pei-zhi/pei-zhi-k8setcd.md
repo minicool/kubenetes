@@ -7,6 +7,12 @@ iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2379 -j ACCEPT
 iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2380 -j ACCEPT
 ```
 
+## yum 准备
+
+```bash
+yum install -y etcd 
+```
+
 ## \(static\)静态服务配置启动
 
 ### 配置单etcd
@@ -21,7 +27,7 @@ systemctl start etcd;systemctl enable etcd
 # grep -v '^#' /etc/etcd/etcd.conf
 # ETCD_NAME=default
 # ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
-# ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://192.168.0.201:2379"
+# ETCD_LISTEN_CLIENT_URLS="http://127.0.0.1:2379,http://192.168.0.201:2379"
 # ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.201:2379"
 #刷新配置文件
 systemctl daemon-reload
@@ -93,8 +99,8 @@ export ETCD_HOST_IP=$ETCD_1_IP
 export ETCD_HOST_NAME=$ETCD_1_NAME
 
 export ETCD_LISTEN_PEER_URLS=http://$ETCD_HOST_IP:2380
-export ETCD_LISTEN_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
-export ETCD_ADVERTISE_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
+export ETCD_LISTEN_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
+export ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
 export ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_HOST_IP:2380
 export ETCD_INITIAL_CLUSTER=$ETCD_1_NAME=http://$ETCD_1_IP:2380,$ETCD_2_NAME=http://$ETCD_2_IP:2380,$ETCD_3_NAME=http://$ETCD_3_IP:2380
 export ETCD_INITIAL_CLUSTER_STATE=new
@@ -125,8 +131,8 @@ export ETCD_HOST_IP=$ETCD_2_IP
 export ETCD_HOST_NAME=$ETCD_2_NAME
 
 export ETCD_LISTEN_PEER_URLS=http://$ETCD_HOST_IP:2380
-export ETCD_LISTEN_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
-export ETCD_ADVERTISE_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
+export ETCD_LISTEN_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
+export ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
 export ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_HOST_IP:2380
 export ETCD_INITIAL_CLUSTER=$ETCD_1_NAME=http://$ETCD_1_IP:2380,$ETCD_2_NAME=http://$ETCD_2_IP:2380,$ETCD_3_NAME=http://$ETCD_3_IP:2380
 export ETCD_INITIAL_CLUSTER_STATE=exist
@@ -158,8 +164,8 @@ export ETCD_HOST_IP=$ETCD_3_IP
 export ETCD_HOST_NAME=$ETCD_3_NAME
 
 export ETCD_LISTEN_PEER_URLS=http://$ETCD_HOST_IP:2380
-export ETCD_LISTEN_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
-export ETCD_ADVERTISE_CLIENT_URLS=http://localhost:2379,http://$ETCD_HOST_IP:2379
+export ETCD_LISTEN_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
+export ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379,http://$ETCD_HOST_IP:2379
 export ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_HOST_IP:2380
 export ETCD_INITIAL_CLUSTER=$ETCD_1_NAME=http://$ETCD_1_IP:2380,$ETCD_2_NAME=http://$ETCD_2_IP:2380,$ETCD_3_NAME=http://$ETCD_3_IP:2380
 export ETCD_INITIAL_CLUSTER_STATE=exist
@@ -201,6 +207,9 @@ etcdctl endpoint status -w="table"
 
 #查询etcd状态
 netstat -ntlp|grep etcd
+
+#集群健康检查
+etcdctl cluster-health
 ```
 
 ## etcd备份
