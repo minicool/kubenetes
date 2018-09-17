@@ -1,10 +1,13 @@
 # 配置k8s-etcd
 
-## 防火墙开启
+iptable开启规则
 
 ```bash
 iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2379 -j ACCEPT
 iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2380 -j ACCEPT
+
+#查看iptable
+iptables -nL --line-number
 ```
 
 ## yum 准备

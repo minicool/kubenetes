@@ -28,8 +28,12 @@ vi /etc/hostname
 ```bash
 chmod +x /etc/rc.d/rc.local 
 iptables -I INPUT -s 192.168.0.0/24 -j ACCEPT iptables -I FORWARD -j ACCEPT 
+# 服务在系统启动的时候自动启动 /etc/rc.d/rc.local
 echo 'iptables -I INPUT -s 192.168.0.0/24 -j ACCEPT' >> /etc/rc.d/rc.local 
 echo 'iptables -I FORWARD -j ACCEPT' >> /etc/rc.d/rc.local
+
+#查看iptable
+iptables -nL --line-number
 ```
 
 ## selinux设置
@@ -110,6 +114,10 @@ yum install -y ntp
 systemctl start ntpd;systemctl enable ntpd
 ntpdate ntp1.aliyun.com
 hwclock -w
+# 写入自动定时
+service crond start
+crontab -u root -e
+00 12 * * * /sbin/ntpdate ntp1.aliyun.com #cn.pool.ntp.org
 ```
 
 
