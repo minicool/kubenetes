@@ -40,7 +40,7 @@ kubectl config use-context kubernetes
 export BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
 # 写入文件 token.csv Token,用户名,UID,用户组
 cd /etc/kubernetes
-echo "{$BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,"system:kubelet-bootstrap"" > token.svc
+echo "${BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,"system:kubelet-bootstrap"" > token.svc
 #尽量不要更新BOOTSTRAP_TOKEN值, 如果要更新, kube-apiserver使用的token.csv文件和kubelet使用的bootstrap.kubeconfig文件都需要更新, 更新后还需要重启kube-apiserver和kube-proxy服务
 ```
 {% endcode-tabs-item %}

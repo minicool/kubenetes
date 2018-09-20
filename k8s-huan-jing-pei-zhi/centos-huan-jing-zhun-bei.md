@@ -46,10 +46,14 @@ setenforce 0
 ## yum源 设置
 
 ```bash
+# 添加epel源
 yum -y install epel-release
 yum update
-#使用阿里云的源予以替换
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo 
+# 备份CentOS源
+cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.back
+# 使用阿里云的源予以替换
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all 
 yum makecache
 ```
 
