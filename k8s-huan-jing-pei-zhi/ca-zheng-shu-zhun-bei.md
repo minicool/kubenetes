@@ -162,3 +162,11 @@ cfssl print-defaults csr > etcd-csr.json
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
+#### 生成etcd证书与私钥
+
+```bash
+cfssl gencert -ca=/etc/kubernetes/ssl/ca/ca.pem -ca-key=/etc/kubernetes/ssl/ca/ca-key.pem -config=/etc/kubernetes/ssl/ca/ca-config.json -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
+```
+
+
+

@@ -3,11 +3,13 @@
 iptable开启规则
 
 ```bash
+vim /etc/sysconfig/iptables
 iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2379 -j ACCEPT
 iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2380 -j ACCEPT
-
+service iptables restart
 #查看iptable
 iptables -nL --line-number
+
 ```
 
 ## yum 准备

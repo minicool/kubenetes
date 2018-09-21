@@ -1,10 +1,39 @@
 # 配置centos环境
 
+
+
 ## network 设置
 
 设置网络处于同一局域网内
 
-`vi /etc/sysconfgi/network-script/ifconf-eth0`
+```bash
+export IP-ADDR=192.168.0.201
+export HOST-NAME=
+```
+
+{% code-tabs %}
+{% code-tabs-item title="/etc/sysconfig/network-scripts/ifcfg-eth0" %}
+```bash
+查询当前默认ip
+ip addr
+
+cat /etc/sysconfig/network-scripts/ifcfg-eth0
+# BOOTPROTO="none"
+# IPADDR="192.168.0.201"
+# NETMASK="255.255.255.0"
+# GATEWAY="192.168.0.1"
+# DNS1="192.168.0.1"
+
+sed -i 's/BOOTPROTO="dhcp"/BOOTPROTO="none"/' /etc/sysconfig/network-script/ifcfg-eth0
+sed -i '$a \IPADDR="192.168.0.201"' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '$a \NETMASK="255.255.255.0"' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '$a \GATEWAY="192.168.0.1"' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '$a \DNS1="192.168.0.1"' /etc/sysconfig/network-scripts/ifcfg-eth0
+#刷新环境
+service network restart
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 设置hostname
 
@@ -14,6 +43,14 @@ vi /etc/hostname
 ```
 
 设置hosts 指向hostname
+
+{% code-tabs %}
+{% code-tabs-item title="/etc/hosts" %}
+```bash
+sed -i '$a \127.0.0.1   k8s-master1-1"' /etc/hosts
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 `vi /etc/hosts` 
 
