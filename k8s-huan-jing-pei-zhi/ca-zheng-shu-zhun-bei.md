@@ -1,4 +1,4 @@
-# 配置ca及kubernetes证书
+# 配置ca及etcd证书
 
 ## 安装cfssl
 
@@ -25,11 +25,11 @@ mv cfssl-certinfo_linux-amd64 /opt/k8s/cfssl/cfssl-certinfo
 # 设置可执行权限
 chmod +x /opt/k8s/cfssl/*
 # 添加到环境变量, 底部追加
-vi /etc/profile
+sed -i '$a \export PATH=$PATH:/opt/k8s/cfssl' /etc/profile
+# vi /etc/profile
 ##############################################
-export PATH=$PATH:/opt/k8s/cfssl
+# export PATH=$PATH:/opt/k8s/cfssl
 ##############################################
-
 # 使之生效
 source /etc/profile
 ```
@@ -40,8 +40,8 @@ source /etc/profile
 
 ```bash
 # 创建 CA 配置文件
-mkdir -p /opt/k8s/ssl
-cd /opt/k8s/ssl
+mkdir -p /opt/k8s/ssl/ca
+cd /opt/k8s/ssl/ca
 ​
 cfssl print-defaults config > ca-config.json
 cfssl print-defaults csr > ca-csr.json
@@ -123,11 +123,21 @@ cfssl print-defaults csr > ca-csr.json
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
+### 生成秘钥和证书
+
+```bash
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+```
+
 ## 创建etcd TLS证书与私钥
 
 ### 创建配置文件
 
 ```bash
+# 创建 etcd 配置文件
+mkdir -p /opt/k8s/ssl/etcd
+cd /opt/k8s/ssl/etcd
+#生成 etcd 配置文件
 cfssl print-defaults csr > etcd-csr.json
 ```
 
@@ -165,7 +175,7 @@ cfssl print-defaults csr > etcd-csr.json
 #### 生成etcd证书与私钥
 
 ```bash
-cfssl gencert -ca=/etc/kubernetes/ssl/ca/ca.pem -ca-key=/etc/kubernetes/ssl/ca/ca-key.pem -config=/etc/kubernetes/ssl/ca/ca-config.json -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
+cfssl gencert -ca=/opt/k8s/ssl/ca/ca.pem -ca-key=/opt/k8s/ssl/ca/ca-key.pem -config=/opt/k8s/ssl/ca/ca-config.json -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
 ```
 
 

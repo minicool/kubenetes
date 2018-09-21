@@ -8,7 +8,7 @@
 
 ```bash
 export IP-ADDR=192.168.0.201
-export HOST-NAME=
+export HOST-NAME=k8s-master1-1
 ```
 
 {% code-tabs %}
@@ -37,10 +37,13 @@ service network restart
 
 设置hostname
 
+{% code-tabs %}
+{% code-tabs-item title="/etc/hostname" %}
 ```bash
 hostnamectl set-hostname k8s-master1-1
-vi /etc/hostname
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 设置hosts 指向hostname
 
@@ -52,13 +55,9 @@ sed -i '$a \127.0.0.1   k8s-master1-1"' /etc/hosts
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-`vi /etc/hosts` 
-
 刷新环境
 
 `service network restart`
-
-
 
 ## iptables 设置
 
@@ -85,6 +84,7 @@ setenforce 0
 ```bash
 # 添加epel源
 yum -y install epel-release
+yun -y install wget
 yum update
 # 备份CentOS源
 cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.back
