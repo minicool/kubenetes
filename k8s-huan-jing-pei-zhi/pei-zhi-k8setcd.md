@@ -126,22 +126,7 @@ sed -i 's!^#ETCD_INITIAL_CLUSTER_STATE="new"!ETCD_INITIAL_CLUSTER_STATE="'$ETCD_
 sed -i 's!^#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"!ETCD_INITIAL_CLUSTER_TOKEN="'$ETCD_INITIAL_CLUSTER_TOKEN'"!' /etc/etcd/etcd.conf
 
 #修改启动服务
-sed -i 's/ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) \/usr\/bin\/etcd --name=\"${ETCD_NAME}\" --data-dir=\"${ETCD_DATA_DIR}\" --listen-client-urls=\"${ETCD_LISTEN_CLIENT_URLS}\""/ExecStart=/opt/kubernetes/bin/etcd \
---name=${ETCD_NAME} \
---data-dir=${ETCD_DATA_DIR} \
---listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \
---listen-client-urls=${ETCD_LISTEN_CLIENT_URLS} \
---advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \
---initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
---initial-cluster=${ETCD_INITIAL_CLUSTER} \
---initial-cluster-token=${ETCD_INITIAL_CLUSTER} \
---initial-cluster-state=new \
---cert-file=\/opt\/kubernetes\/ssl/server.pem \
---key-file=\/opt\/kubernetes\/ssl/server-key.pem \
---peer-cert-file=\/opt\/kubernetes\/ssl\/server.pem \
---peer-key-file=\/opt\/kubernetes\/ssl\/server-key.pem \
---trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem \
---peer-trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem'
+sed -i 's!ExecStart=\/bin\/bash -c "GOMAXPROCS=$(nproc) \/usr\/bin\/etcd --name=\\"${ETCD_NAME}\\" --data-dir=\\"${ETCD_DATA_DIR}\\" --listen-client-urls=\\"${ETCD_LISTEN_CLIENT_URLS}\\""!ExecStart=\/opt\/kubernetes\/bin\/etcd --name=${ETCD_NAME} --data-dir=${ETCD_DATA_DIR} --listen-peer-urls=${ETCD_LISTEN_PEER_URLS} --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS} --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} --initial-cluster=${ETCD_INITIAL_CLUSTER} --initial-cluster-token=${ETCD_INITIAL_CLUSTER} --initial-cluster-state=new --cert-file=\/opt\/kubernetes\/ssl\/server.pem --key-file=\/opt\/kubernetes\/ssl\/server-key.pem --peer-cert-file=\/opt\/kubernetes\/ssl\/server.pem --peer-key-file=\/opt\/kubernetes\/ssl\/server-key.pem --trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem --peer-trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem!' /usr/lib/systemd/system/etcd.service
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
