@@ -178,5 +178,11 @@ cfssl print-defaults csr > etcd-csr.json
 cfssl gencert -ca=/opt/k8s/ssl/ca/ca.pem -ca-key=/opt/k8s/ssl/ca/ca-key.pem -config=/opt/k8s/ssl/ca/ca-config.json -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
 ```
 
+## 分发证书
 
+```bash
+mkdir -p /etc/kubernetes/ssl
+cp -a /opt/k8s/ssl /etc/kubernetes/ssl
+scp -a /opt/k8s/ssl root@192.168.0.201:/etc/kubernetes/ssl
+```
 
