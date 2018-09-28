@@ -29,7 +29,7 @@ yum install -y etcd
 echo "update /etc/etcd/etcd.conf"
 sed -i 's/localhost:2379/&\,http:\/\/192.168.0.201:2379/' /etc/etcd/etcd.conf
 systemctl start etcd;systemctl enable etcd
-# grep -v '^#' /etc/etcd/etcd.conf
+# s
 # ETCD_NAME=default
 # ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
 # ETCD_LISTEN_CLIENT_URLS="http://127.0.0.1:2379,http://192.168.0.201:2379"
@@ -93,6 +93,8 @@ ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd \
 
 #### 配置etcd-1
 
+{% code-tabs %}
+{% code-tabs-item title="init-etd-1.sh" %}
 ```bash
 export ETCD_1_IP=192.168.0.201
 export ETCD_1_NAME=k8s-etcd1
@@ -110,6 +112,7 @@ export ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_HOST_IP:2380
 export ETCD_INITIAL_CLUSTER=$ETCD_1_NAME=http://$ETCD_1_IP:2380,$ETCD_2_NAME=http://$ETCD_2_IP:2380,$ETCD_3_NAME=http://$ETCD_3_IP:2380
 export ETCD_INITIAL_CLUSTER_STATE=new
 export ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+
 #部分环境变量带有/，导致sed出错，换成！作为表示
 sed -i 's/default.etcd/'$ETCD_HOST_NAME'.etcd/' /etc/etcd/etcd.conf
 sed -i 's/^ETCD_NAME=\"default\"/ETCD_NAME="'$ETCD_HOST_NAME'"/' /etc/etcd/etcd.conf
@@ -121,7 +124,27 @@ sed -i 's!^#ETCD_INITIAL_ADVERTISE_PEER_URLS="http:\/\/localhost:2380"!ETCD_INIT
 sed -i 's!^#ETCD_INITIAL_CLUSTER="default=http:\/\/localhost:2380"!ETCD_INITIAL_CLUSTER="'$ETCD_INITIAL_CLUSTER'"!' /etc/etcd/etcd.conf
 sed -i 's!^#ETCD_INITIAL_CLUSTER_STATE="new"!ETCD_INITIAL_CLUSTER_STATE="'$ETCD_INITIAL_CLUSTER_STATE'"!' /etc/etcd/etcd.conf
 sed -i 's!^#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"!ETCD_INITIAL_CLUSTER_TOKEN="'$ETCD_INITIAL_CLUSTER_TOKEN'"!' /etc/etcd/etcd.conf
+
+#修改启动服务
+sed -i 's/ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) \/usr\/bin\/etcd --name=\"${ETCD_NAME}\" --data-dir=\"${ETCD_DATA_DIR}\" --listen-client-urls=\"${ETCD_LISTEN_CLIENT_URLS}\""/ExecStart=/opt/kubernetes/bin/etcd \
+--name=${ETCD_NAME} \
+--data-dir=${ETCD_DATA_DIR} \
+--listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \
+--listen-client-urls=${ETCD_LISTEN_CLIENT_URLS} \
+--advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \
+--initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
+--initial-cluster=${ETCD_INITIAL_CLUSTER} \
+--initial-cluster-token=${ETCD_INITIAL_CLUSTER} \
+--initial-cluster-state=new \
+--cert-file=\/opt\/kubernetes\/ssl/server.pem \
+--key-file=\/opt\/kubernetes\/ssl/server-key.pem \
+--peer-cert-file=\/opt\/kubernetes\/ssl\/server.pem \
+--peer-key-file=\/opt\/kubernetes\/ssl\/server-key.pem \
+--trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem \
+--peer-trusted-ca-file=\/opt\/kubernetes\/ssl\/ca.pem'
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 #### 配置etcd-2
 
